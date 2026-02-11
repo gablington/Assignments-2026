@@ -11,7 +11,6 @@ float energy_calculation(float atomic_number, float initial_n, float final_n)
 {
     const float rydberg{13.6};
     float energy{atomic_number*atomic_number*rydberg*(1/(final_n*final_n) - 1/(initial_n*initial_n))};
-    std::cout<<energy<<std::endl;
 return energy;
 }
 
@@ -24,6 +23,9 @@ int main()
     float final_n;
     float atomic_number;
     float energy_in_eV; //Converts between Joules and eV
+    float frequency_calculator; //Allows conversion of energy in eV to J for frequency calculation
+    const float Planck_const{6.62607015e-34};
+    const float speed_of_light{3e8};
     int one_or_two;
     char yn_restart;
 
@@ -130,18 +132,23 @@ int main()
         {
             //Converts between units numerically and verbally for the print statement.
             energy_in_eV = 1;
+            frequency_calculator = 1.6e-19;
             units = "eV";
         }
 
         if(one_or_two==2)
         {
             energy_in_eV = 1.6e-19;
+            frequency_calculator = 1;
             units = "J";
         }
 
-        std::cout<<"The photon energy of the transition from "<<initial_n<<" to "<<final_n<< "for an atom of "<<
+        float frequency{energy_calculation(atomic_number, initial_n, final_n)*frequency_calculator/Planck_const};
+        float wavelength{speed_of_light/frequency};
+
+        std::cout<<"The photon energy of the transition from "<<initial_n<<" to "<<final_n<< " for an atom of "<<
         " atomic number "<<atomic_number<<" is "<<energy_in_eV*energy_calculation(atomic_number, initial_n, final_n)<<
-        " "<<units<<std::endl;
+        " "<<units<<" which corresponds to a wavelength of "<<wavelength*1e9<<" nm."<<std::endl;
 
         std::cin.clear();
         std::cin.ignore();
