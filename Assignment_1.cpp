@@ -5,16 +5,46 @@
 #include<cmath>
 #include<stdlib.h>
 
+float energy_calculation(float atomic_number, float initial_n, float final_n)
+{
+    float energy_in_eV;
+    int one_or_two;
+    const float rydberg{13.6};
+    std::string units;
+
+    std::cout<<"If you would like the transition energy in eV, press 1. If you would like it in "<<
+    "Joules, press 2: "<<std::endl;
+    std::cin>>one_or_two;
+    while (one_or_two!=1 && one_or_two!=2)
+    {
+        std::cin.clear();
+        std::cin.ignore();
+        std::cout<<"Please press 1 or 2: "<<std::endl;
+        std::cin>>one_or_two;
+    }
+    if(one_or_two==1)
+    {
+        energy_in_eV = 1;
+        units = "eV";
+    }
+    if(one_or_two==2)
+    {
+        energy_in_eV = 1.6e-19;
+        units = "J";
+    }
+    
+    float energy{energy_in_eV*atomic_number*rydberg*(1/(final_n*final_n) - 1/(initial_n*initial_n))};
+    std::cout<<energy<<std::endl;
+return energy;
+}
+
+
 int main()
 {
-    const float rydberg{13.6};
-    const float eV{1.6e-19};
-    std::stringstream stream_input_values;
     std::string input_values;
     float initial_n;
     float final_n;
     float atomic_number;
-    int one_or_two;
     char yn_restart;
 
     yn_restart == 'Y';
@@ -28,12 +58,10 @@ int main()
         "the atom that is emitting the photon. These should all be integers seperated by spaces: "<<std::endl;
         std::getline(std::cin,input_values);
 
-        stream_input_values<<input_values;
-
-        std::stringstream ss(input_values);
-        ss>>initial_n;
-        ss>>final_n;
-        ss>>atomic_number;
+        std::stringstream readable_input_values(input_values);
+        readable_input_values>>initial_n;
+        readable_input_values>>final_n;
+        readable_input_values>>atomic_number;
 
         while (initial_n <= 1 || initial_n!=floor(initial_n))
         {
@@ -45,7 +73,7 @@ int main()
             }
             if(initial_n<1)
             {
-                std::cout<<"Your input initial energy level is less than 1, so it is non-physical. "<<std::endl;
+                std::cout<<"Your input initial energy level is less than 1, or you have used non-numeric values. "<<std::endl;
             }
             if(initial_n==1)
             {
@@ -65,7 +93,7 @@ int main()
             }
             if(final_n<1)
             {
-                std::cout<<"Your input final energy level is less than 1. "<<std::endl;
+                std::cout<<"Your input final energy level is less than 1, or you have used non-numeric values. "<<std::endl;
             }
             if(final_n>=initial_n)
             {
@@ -76,7 +104,6 @@ int main()
             std::cin>>final_n;
         }
         
-
         while(atomic_number<1 || atomic_number!=floor(atomic_number) || atomic_number>118)
         {
             std::cin.clear();
@@ -87,7 +114,7 @@ int main()
             }
             if(atomic_number<=0)
             {
-                std::cout<<"Your input atomic number is less than 1. "<<std::endl;
+                std::cout<<"Your input atomic number is less than 1.  "<<std::endl;
             }
             if(atomic_number>118)
             {
@@ -97,28 +124,9 @@ int main()
             std::cin>>atomic_number;
         }
 
-        std::cout<<"If you would like the transition energy in eV, press 1. If you would like it in "<<
-        "Joules, press 2: "<<std::endl;
-        std::cin>>one_or_two;
-        while (one_or_two!=1 && one_or_two!=2)
-        {
-            std::cin.clear();
-            std::cin.ignore();
-            std::cout<<"Please press 1 or 2: "<<std::endl;
-            std::cin>>one_or_two;
-        }
-        if(one_or_two==1)
-        {
-            float energy{atomic_number*rydberg*(1/(final_n*final_n) - 1/(initial_n*initial_n))};
-            std::cout<<"The photon energy of the transition from "<<initial_n<<" to "<<final_n<<
-            " for an atom of atomic number "<<atomic_number<<" is "<<energy<<" eV."<<std::endl;
-        }
-        if(one_or_two==2)
-        {
-            float energy{eV*atomic_number*rydberg*(1/(final_n*final_n) - 1/(initial_n*initial_n))};
-            std::cout<<"The photon energy of the transition from "<<initial_n<<" to "<<final_n<<
-            " for an atom of atomic number "<<atomic_number<<" is "<<energy<<" J."<<std::endl;
-        }
+        std::cout<<"The photon energy of the transition from "<<initial_n<<" to "<<final_n<<
+        " for an atom of atomic number "<<atomic_number<<" is "<<energy_calculation(atomic_number, initial_n, final_n)<<
+        std::endl;
 
         std::cin.clear();
         std::cin.ignore();
