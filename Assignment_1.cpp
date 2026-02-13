@@ -14,7 +14,6 @@ float energy_calculation(float atomic_number, float initial_n, float final_n)
 return energy;
 }
 
-
 int main()
 {
     std::string input_values;
@@ -32,16 +31,25 @@ int main()
 
     do
     {
+        //All input values initially set to a value that will be flagged by the programme so that,
+        //on re-runs, non-numeric inputs don't default to the last numeric
         float initial_n{0.001};
         float final_n{0.001};
         float atomic_number{0.001};
+
         std::cout<<"Assuming Bohr's model of the atom, one can calculate the energy of "<<
         "photons released in transitions from higher to lower energy levels. Please state "<<
         "a higher energy level, one that an electron will initially be in, followed by the "<<
         "lower energy level that the electron will fall to, and then the atomic number of "<<
         "the atom that is emitting the photon. These should all be integers seperated by spaces: "<<std::endl;
-
         std::getline(std::cin,input_values);
+
+        //Fail state for overflows, etc.
+        while (std::cin.fail());
+        {
+            std::cout<<"Input failed. Please try again: "<<std::endl;
+            std::getline(std::cin,input_values);
+        }
 
         //Input string is converted to string stream to be easily read off into individual variables.
         readable_input_values<<input_values;
@@ -51,7 +59,9 @@ int main()
         readable_input_values>>final_n;
         readable_input_values>>atomic_number;
 
-        while (initial_n <= 1 || initial_n!=floor(initial_n)) //Scrutinises impossible transitions and non-integers.
+        //Scrutinises input values of the initial energy level, including impossible transitions (i.e. n = 1), 
+        //non-physical energy levels, and non-integers.
+        while (initial_n <= 1 || initial_n!=floor(initial_n))
         {
             std::cin.clear();
             std::cin.ignore();
@@ -63,21 +73,27 @@ int main()
             }
             if(initial_n<1)
             {
-                //String stream converts numerical value of non-numeric characters to small numbers less than 1,
-                //So this error message catches both non-physical energy levels and characters.
+                //String stream converts numerical value of non-numeric characters to very small numbers,
+                //so this error message catches both non-physical energy levels and characters.
                 //This is preferable to the failed input method as it doesn't loop endlessly
                 //or output same message multiple times.
                 std::cout<<"Your input initial energy level is less than 1, or you have used non-numeric values. "<<std::endl;
             }
             if(initial_n==1)
             {
-                std::cout<<"Your input energy level is equal to 1, so the photon cannot de-excite. "<<std::endl;
+                std::cout<<"Your input initial energy level is equal to 1, so the photon cannot de-excite. "<<std::endl;
+            }
+            if(std::cin.fail())
+            {
+                std::cout<<"Your input initial energy level has failed. "<<std::endl;
             }
             std::cout<<"Please choose an integer of value greater than 1 for your intial energy level. "<<std::endl;
             std::cin>>initial_n;
         }
 
-        while (final_n < 1 || final_n!=floor(final_n) || final_n>=initial_n ) //Same as initial_n, but ensures de-excitation.
+        //Scrutinises input values of the final energy level, including non-transitions (i.e. n not changing), 
+        //non-physical energy levels, absorption cases (where the final level is higher than the initial level), and non-integers.
+        while (final_n < 1 || final_n!=floor(final_n) || final_n>=initial_n ) 
         {
             std::cin.clear();
             std::cin.ignore();
@@ -93,11 +109,17 @@ int main()
             {
                 std::cout<<"Your final energy state is greater than your initial energy state. "<<std::endl;
             }
+            if(std::cin.fail())
+            {
+                std::cout<<"Your input final energy level has failed. "<<std::endl;
+            }
             std::cout<<"Please choose an integer of value greater than 0 which is lower than the initial energy level "<<
             "for your final energy level. "<<std::endl;
             std::cin>>final_n;
         }
         
+        //Scrutinises input values of the atomic number, including non-physical atomic numbers, 
+        //impossibly large atomic numbers, and non-integers.
         while(atomic_number<1 || atomic_number!=floor(atomic_number) || atomic_number>118)
         {
             std::cin.clear();
@@ -114,6 +136,10 @@ int main()
             {
                 std::cout<<"The highest possible atomic number is 118, which is Oganesson. "<<std::endl;
             }
+            if(std::cin.fail())
+            {
+                std::cout<<"Your input atomic number has failed. "<<std::endl;
+            }
             std::cout<<"Your chosen atomic number is not valid. Please choose an integer that is greater than zero: "<<std::endl;
             std::cin>>atomic_number;
         }
@@ -128,7 +154,6 @@ int main()
             std::cout<<"Please press 1 or 2: "<<std::endl;
             std::cin>>one_or_two;
         }
-
         if(one_or_two==1)
         {
             //Converts between units numerically and verbally for the print statement.
@@ -136,7 +161,6 @@ int main()
             frequency_calculator = 1.6e-19;
             units = "eV";
         }
-
         if(one_or_two==2)
         {
             energy_in_eV = 1.6e-19;
@@ -166,7 +190,6 @@ int main()
         
         std::cin.clear();
         std::cin.ignore();
-        
     } while (yn_restart=='Y');
 
     if(yn_restart=='N')
