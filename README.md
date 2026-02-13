@@ -9,3 +9,5 @@ By interpreting user inputs as one stream and converting to string stream, the f
 As the programme only accounts for de-excitation, it also checks that the final energy level is less than the initial energy level.
 
 The highest atomic number is 118, which is the element Oganesson. Ergo, atoms of this atomic number indicate the cap for allowed values that the programme allows.
+
+No A.I. assistance was used during the writing and testing of this programme.
