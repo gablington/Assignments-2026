@@ -19,9 +19,7 @@ int main()
 {
     std::string input_values;
     std::string units;
-    float initial_n;
-    float final_n;
-    float atomic_number;
+    std::stringstream readable_input_values;
     float energy_in_eV; //Converts between Joules and eV
     float frequency_calculator; //Allows conversion of energy in eV to J for frequency calculation
     const float Planck_const{6.62607015e-34};
@@ -34,6 +32,9 @@ int main()
 
     do
     {
+        float initial_n{0.001};
+        float final_n{0.001};
+        float atomic_number{0.001};
         std::cout<<"Assuming Bohr's model of the atom, one can calculate the energy of "<<
         "photons released in transitions from higher to lower energy levels. Please state "<<
         "a higher energy level, one that an electron will initially be in, followed by the "<<
@@ -43,7 +44,7 @@ int main()
         std::getline(std::cin,input_values);
 
         //Input string is converted to string stream to be easily read off into individual variables.
-        std::stringstream readable_input_values(input_values);
+        readable_input_values<<input_values;
         
         //Inputs seperated by white space are decanted into variables. Characters after third whitespace are ignored.
         readable_input_values>>initial_n;
